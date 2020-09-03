@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
@@ -41,6 +42,9 @@ const Dashboard: React.FC = () => {
         (transaction: Transaction) => ({
           ...transaction,
           formattedValue: formatValue(transaction.value),
+          formattedDate: new Date(transaction.created_at).toLocaleDateString(
+            'pt-BR',
+          ),
         }),
       );
 
@@ -56,6 +60,12 @@ const Dashboard: React.FC = () => {
 
     loadTransactions();
   }, []);
+
+  // const handleFormatDate = (date: Date): string => {
+  //   const formatDate = date.toString();
+
+  //   return formatDate;
+  // };
 
   return (
     <>
@@ -100,9 +110,12 @@ const Dashboard: React.FC = () => {
               {transactions.map(transaction => (
                 <tr key={transaction.id}>
                   <td className="title">{transaction.title}</td>
-                  <td className={transaction.type}>{transaction.value}</td>
+                  <td className={transaction.type}>
+                    {transaction.type === 'outcome' && ' - '}
+                    {transaction.formattedValue}
+                  </td>
                   <td>{transaction.category.title}</td>
-                  <td>20/04/2020</td>
+                  <td>{transaction.formattedDate}</td>
                 </tr>
               ))}
             </tbody>
